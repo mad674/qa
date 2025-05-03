@@ -6,7 +6,7 @@ from evaluator import evaluate_program
 from generator import infer, build_vocab, PointerProgramGenerator
 # from masking import predict_and_mask, run_final_pattern_check, BERTForNER, entity_mapping,mask_predictions
 from model_retriever import BertRetriever
-from qa_pipeline.main import convert_pdf_to_json
+# from qa_pipeline.main import convert_pdf_to_json
 # from sklearn.feature_extraction.text import TfidfVectorizer
 # from sklearn.metrics.pairwise import cosine_similarity
 # from typing import Dict#, List, Any, Union, Optional
@@ -98,41 +98,41 @@ async def find_relevant(request: Request):
 
 #input is question and pdf file
 
-@app.post("/ask_pdf", response_model=GenerateOut)
-async def ask_pdf(question: str = Form(...),pdf: UploadFile = File(...)):
-    # Step 1: Save the uploaded PDF to a temporary file
-    pdf_path = f"temp_{pdf.filename}"
-    try:
-        with open(pdf_path, "wb") as f:
-            f.write(await pdf.read())
+# @app.post("/ask_pdf", response_model=GenerateOut)
+# async def ask_pdf(question: str = Form(...),pdf: UploadFile = File(...)):
+#     # Step 1: Save the uploaded PDF to a temporary file
+#     pdf_path = f"temp_{pdf.filename}"
+#     try:
+#         with open(pdf_path, "wb") as f:
+#             f.write(await pdf.read())
 
-        # Step 2: Convert the PDF to JSON
-        model_input = convert_pdf_to_json(pdf_path, question)
-        print("model_input: ", model_input)
-        # Step 3: Parse the JSON to extract fields for run_pipeline
-        model_input_data = json.loads(model_input)
-        query_in = QueryIn(
-            qa={"question": question},
-            pre_text=model_input_data.get("pretext", []),
-            post_text=model_input_data.get("posttext", []),
-            table=model_input_data.get("table", [])
-        )
+#         # Step 2: Convert the PDF to JSON
+#         model_input = convert_pdf_to_json(pdf_path, question)
+#         print("model_input: ", model_input)
+#         # Step 3: Parse the JSON to extract fields for run_pipeline
+#         model_input_data = json.loads(model_input)
+#         query_in = QueryIn(
+#             qa={"question": question},
+#             pre_text=model_input_data.get("pretext", []),
+#             post_text=model_input_data.get("posttext", []),
+#             table=model_input_data.get("table", [])
+#         )
 
-        # Step 4: Call run_pipeline with the extracted data
-        result = await run_pipeline(query_in)
+#         # Step 4: Call run_pipeline with the extracted data
+#         result = await run_pipeline(query_in)
 
-        # Step 5: Return the result
-        return result
+#         # Step 5: Return the result
+#         return result
 
-    except Exception as e:
-        # Log the error and raise an HTTPException
-        print(f"Error in /ask_pdf: {e}")
-        raise HTTPException(status_code=500, detail="An error occurred while processing the PDF.")
+#     except Exception as e:
+#         # Log the error and raise an HTTPException
+#         print(f"Error in /ask_pdf: {e}")
+#         raise HTTPException(status_code=500, detail="An error occurred while processing the PDF.")
 
-    finally:
-        # Step 6: Clean up the temporary file
-        if os.path.exists(pdf_path):
-            os.remove(pdf_path)
+#     finally:
+#         # Step 6: Clean up the temporary file
+#         if os.path.exists(pdf_path):
+#             os.remove(pdf_path)
 
 #input is question and pretext,posttext,table
 @app.post("/retrive", response_model=GenerateOut)

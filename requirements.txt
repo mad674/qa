@@ -4,19 +4,19 @@ pydantic
 typing
 torch
 transformers
-sentence-transformers
+# sentence-transformers
 sympy
 numpy
 gdown
 requests
-sentencepiece
+# sentencepiece
 scikit-learn
 # timm
 # safetensors
 python-multipart
 # pillow
 # python-docx
-pdfplumber
+# pdfplumber
 # onnxruntime
 # huggingface-hub
 # easyocr

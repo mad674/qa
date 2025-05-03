@@ -124,12 +124,12 @@ def download_and_load_models():
             "output_path": "data/finqa_vocab.json"
         },
         "train_data": {
-            "file_id": "1k0GgkIXCPic_EgX1m_wc0ZiXZnMYO1Dk",  # Replace with your Google Drive file ID
-            "output_path": "data/train.json"
+            "file_id": "1ALCBwsDc6GjuEcZQ9xgBXPwh1-UNG6Rg",  # Replace with your Google Drive file ID
+            "output_path": "data/new_train.json"
         },
         "test_data": {
-            "file_id": "1KNZXY7Axu2bEDx3mXV6tUpREtQF1oMlx",  # Replace with your Google Drive file ID
-            "output_path": "data/test.json"
+            "file_id": "1eGxovRXFLFhcL5HW6ja2NJEvDYtBS2qZ",  # Replace with your Google Drive file ID
+            "output_path": "data/new_test.json"
         },
         # "detr_processor": {
         #     "file_id": "none",  # Replace with your Google Drive file ID
