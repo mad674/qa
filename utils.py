@@ -116,8 +116,8 @@ def download_and_load_models():
             "output_path": "models/200aBRS.pt"
         },
         "generator_model": {
-            "file_id": "1M0YWjjOfpJ5pEZNxTQEiRYFIvkZu7v6S",  # Replace with your Google Drive file ID
-            "output_path": "models/100egen.pt"
+            "file_id": "1vs6VEgyjRnaGoWMRE9KVyBezeySiwvim",  # Replace with your Google Drive file ID
+            "output_path": "models/quantized100egen.pt"
         },
         "vocab_file": {
             "file_id": "11yTbdEJvxe4IWBmaxzFPAFSfOJ-krxjj",  # Replace with your Google Drive file ID

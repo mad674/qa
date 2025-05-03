@@ -57,11 +57,11 @@ with open(vocab_path, "r") as f:
     vocab = list(vocab_dict.keys())
 
 generator_model = PointerProgramGenerator(vocab_dict)
-generator_model.load_state_dict(torch.load(generator_path, map_location=device))
+# print("generator_model: ", generator_model)
+generator_model=torch.load(generator_path, map_location=device)
 generator_model.eval()
 
 
-#check health
 @app.get("/health")
 async def health_check():
     return {"status": "ok"}
@@ -164,7 +164,8 @@ async def run_pipeline(data: QueryIn):
     }
     program = infer(generator_model, sample, vocab_dict)
     # Step 4: Evaluate the program
-    program=" , ".join(program[:-1])
+    # print("program: ", program)
+    program=" , ".join(program[:-1] if len(program)>1 else program )
     result = evaluate_program(program, data.table)
     gold_inds=list(gold_inds.values())
     # Step 5: Return all
