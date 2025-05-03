@@ -7,7 +7,7 @@ from transformers import get_linear_schedule_with_warmup
 import time
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Use BERT for encoding
-TOKENIZER = BertTokenizerFast.from_pretrained("bert-base-uncased")  # ← FAST tokenizer
+# TOKENIZER = BertTokenizerFast.from_pretrained("bert-base-uncased")  # ← FAST tokenizer
 
 # ----------------------- Cell 2: Dataset, Vocabulary & Collate -----------------------
 def filter_gold_inds(gold_inds):
