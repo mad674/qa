@@ -58,7 +58,7 @@ with open(vocab_path, "r") as f:
 
 generator_model = PointerProgramGenerator(vocab_dict)
 # print("generator_model: ", generator_model)
-generator_model=torch.load(generator_path, map_location=device)
+generator_model=torch.load(generator_path, map_location=device,weights_only=False)
 generator_model.eval()
 
 
