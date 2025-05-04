@@ -153,83 +153,83 @@ def find_token_span_for_number(tokenizer, input_tokens, number_str):
             return i
     return -1
 
-class FinQADataset(Dataset):
-    def __init__(self, data, tokenizer=BertTokenizerFast.from_pretrained("bert-base-uncased"),op_file="operation_list.txt", const_file="constant_list.txt"):
-        self.examples = []
-        self.vocab = set()
+# class FinQADataset(Dataset):
+#     def __init__(self, data, tokenizer=BertTokenizerFast.from_pretrained("bert-base-uncased"),op_file="operation_list.txt", const_file="constant_list.txt"):
+#         self.examples = []
+#         self.vocab = set()
 
-        with open(op_file, 'r') as f:
-            op_list = [line.strip() for line in f if line.strip()]
-        with open(const_file, 'r') as f:
-            const_list = [line.strip() for line in f if line.strip()]
-        self.dsl_vocab = set(op_list + const_list + ['(', ')', ',', '<PAD>', '<COPY>', '<EOF>','<SOS>'])
+#         with open(op_file, 'r') as f:
+#             op_list = [line.strip() for line in f if line.strip()]
+#         with open(const_file, 'r') as f:
+#             const_list = [line.strip() for line in f if line.strip()]
+#         self.dsl_vocab = set(op_list + const_list + ['(', ')', ',', '<PAD>', '<COPY>', '<EOF>','<SOS>'])
 
-        for ex in data:
-            question = ex['qa']['question']
-            context = " ".join([v for v in ex['qa']['gold_inds'].values() if any(c.isdigit() for c in v)])
-            full_input = question + " " + context
-            enc = tokenizer(full_input, return_tensors='pt', padding='max_length', truncation=True,
-                            max_length=512, return_offsets_mapping=True)
-            offsets = enc['offset_mapping'].squeeze(0).tolist()
-            input_ids = enc['input_ids'].squeeze(0).to(device)
-            input_mask = enc['attention_mask'].squeeze(0).to(device)
-            input_tokens = tokenizer.convert_ids_to_tokens(input_ids)
+#         for ex in data:
+#             question = ex['qa']['question']
+#             context = " ".join([v for v in ex['qa']['gold_inds'].values() if any(c.isdigit() for c in v)])
+#             full_input = question + " " + context
+#             enc = tokenizer(full_input, return_tensors='pt', padding='max_length', truncation=True,
+#                             max_length=512, return_offsets_mapping=True)
+#             offsets = enc['offset_mapping'].squeeze(0).tolist()
+#             input_ids = enc['input_ids'].squeeze(0).to(device)
+#             input_mask = enc['attention_mask'].squeeze(0).to(device)
+#             input_tokens = tokenizer.convert_ids_to_tokens(input_ids)
 
-            raw_input = full_input.lower()
-            # tgt_lines = parse_steps_from_program(ex['qa']['program'])
-            # tgt_tokens = [tok for line in tgt_lines for tok in tokenize_dsl_line(line)]
-            tgt_lines = parse_steps_with_memory(ex['qa']['program'])  # custom memory-aware parser
-            tgt_tokens = [tok for step in tgt_lines for tok in step]
+#             raw_input = full_input.lower()
+#             # tgt_lines = parse_steps_from_program(ex['qa']['program'])
+#             # tgt_tokens = [tok for line in tgt_lines for tok in tokenize_dsl_line(line)]
+#             tgt_lines = parse_steps_with_memory(ex['qa']['program'])  # custom memory-aware parser
+#             tgt_tokens = [tok for step in tgt_lines for tok in step]
 
-            copy_labels = []
-            for t in tgt_tokens:
-                if t in self.dsl_vocab:
-                    copy_labels.append(-100)
-                elif is_number(t):
-                    norm = normalize_number_token(t)
-                    const_candidate = f"CONST_{norm}"
-                    if const_candidate in self.dsl_vocab:
-                        copy_labels.append(-100)
-                        continue
+#             copy_labels = []
+#             for t in tgt_tokens:
+#                 if t in self.dsl_vocab:
+#                     copy_labels.append(-100)
+#                 elif is_number(t):
+#                     norm = normalize_number_token(t)
+#                     const_candidate = f"CONST_{norm}"
+#                     if const_candidate in self.dsl_vocab:
+#                         copy_labels.append(-100)
+#                         continue
 
-                    token_idx = -1
-                    start_char = align_number_token(raw_input, norm)
-                    if start_char != -1:
-                        for i, (start, end) in enumerate(offsets):
-                            if start <= start_char < end:
-                                token_idx = i
-                                break
+#                     token_idx = -1
+#                     start_char = align_number_token(raw_input, norm)
+#                     if start_char != -1:
+#                         for i, (start, end) in enumerate(offsets):
+#                             if start <= start_char < end:
+#                                 token_idx = i
+#                                 break
 
-                    # Fallback to token-based number reconstruction
-                    if token_idx == -1:
-                        for i in range(len(input_tokens)):
-                            reconstructed = reconstruct_number_from_tokens(input_tokens, i)
-                            if reconstructed and abs(float(reconstructed) - float(norm)) < 1e-4:
-                                token_idx = i
-                                break
+#                     # Fallback to token-based number reconstruction
+#                     if token_idx == -1:
+#                         for i in range(len(input_tokens)):
+#                             reconstructed = reconstruct_number_from_tokens(input_tokens, i)
+#                             if reconstructed and abs(float(reconstructed) - float(norm)) < 1e-4:
+#                                 token_idx = i
+#                                 break
 
-                    if token_idx != -1:
-                        copy_labels.append(token_idx)
-                    else:
-                        print(f"❌ Could not map '{norm}' to token index")
-                        copy_labels.append(-100)
-                else:
-                    copy_labels.append(-100)
+#                     if token_idx != -1:
+#                         copy_labels.append(token_idx)
+#                     else:
+#                         print(f"❌ Could not map '{norm}' to token index")
+#                         copy_labels.append(-100)
+#                 else:
+#                     copy_labels.append(-100)
 
-            self.vocab.update([tok for tok in self.dsl_vocab])
-            self.examples.append({
-                'input_ids': input_ids,
-                'input_mask': input_mask,
-                'input_tokens': input_tokens,
-                'program_tokens': tgt_tokens,
-                'copy_labels': copy_labels
-            })
+#             self.vocab.update([tok for tok in self.dsl_vocab])
+#             self.examples.append({
+#                 'input_ids': input_ids,
+#                 'input_mask': input_mask,
+#                 'input_tokens': input_tokens,
+#                 'program_tokens': tgt_tokens,
+#                 'copy_labels': copy_labels
+#             })
 
-    def __len__(self):
-        return len(self.examples)
+#     def __len__(self):
+#         return len(self.examples)
 
-    def __getitem__(self, idx):
-        return self.examples[idx]
+#     def __getitem__(self, idx):
+#         return self.examples[idx]
 
 # Collate + Vocab
 
@@ -292,9 +292,9 @@ class PointerDecoder(nn.Module):
         return vocab_logits, attn_weights, hidden
 
 class PointerProgramGenerator(nn.Module):
-    def __init__(self, vocab_dict):
+    def __init__(self, vocab_dict,model):
         super().__init__()
-        self.encoder = BertModel.from_pretrained("bert-base-uncased")
+        self.encoder = model
         # Use hidden_size = 768 (BERT hidden size), emb_size = 256
         self.decoder = PointerDecoder(hidden_size=768, vocab_size=len(vocab_dict), emb_size=256, vocab_dict=vocab_dict)
         self.vocab_dict = vocab_dict
@@ -327,7 +327,7 @@ class PointerProgramGenerator(nn.Module):
             attns_cat = torch.cat(attns_all, dim=1)  # [B, L, T]
             return logits_cat, attns_cat
         return logits_cat
-    
+   
     
 def encode_programs(program_tokens, vocab_dict):
     max_len = max(len(p) for p in program_tokens)

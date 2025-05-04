@@ -14,7 +14,7 @@ from model_retriever import BertRetriever
 from utils import find_most_relevant_sample, load_dataset, vectorize ,download_and_load_models#,render_text_to_image, extract_text_from_file,transform
 # import pdfplumber
 import torch
-from transformers import BertTokenizerFast#, PegasusTokenizer, PegasusForConditionalGeneration, AutoTokenizer, DetrForObjectDetection, DetrImageProcessor, DetrConfig
+from transformers import BertModel,BertTokenizerFast#, PegasusTokenizer, PegasusForConditionalGeneration, AutoTokenizer, DetrForObjectDetection, DetrImageProcessor, DetrConfig
 import numpy as np
 import json
 import os
@@ -29,6 +29,7 @@ os.environ["WANDB_DISABLED"] = "true"
 
 
 bert_tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
+bert_model= BertModel.from_pretrained("bert-base-uncased")
 device= torch.device("cuda" if torch.cuda.is_available() else "cpu")
 retriver_path,generator_path,vocab_path,train_path,test_path= download_and_load_models()
 
@@ -56,7 +57,7 @@ with open(vocab_path, "r") as f:
     vocab_dict = json.load(f)
     vocab = list(vocab_dict.keys())
 
-generator_model = PointerProgramGenerator(vocab_dict)
+generator_model = PointerProgramGenerator(vocab_dict,bert_model)
 # print("generator_model: ", generator_model)
 generator_model=torch.load(generator_path, map_location=device,weights_only=False)
 generator_model.eval()
@@ -170,7 +171,6 @@ async def run_pipeline(data: QueryIn):
     gold_inds=list(gold_inds.values())
     # Step 5: Return all
     return GenerateOut(gold_inds=gold_inds, program=program, result=str(result))
-
 
 
 if __name__ == "__main__":
