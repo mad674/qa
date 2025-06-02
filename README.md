@@ -43,9 +43,79 @@ Instead of directly predicting the answer, the model **generates a reasoning pro
 
 ---
 
+## Machine Learning Lifecycle 
++------------------------+
+| 1. Problem Definition  |
+|------------------------|
+| - Financial QA over    |
+|   tables and context   |
++------------------------+
+           ↓
++------------------------+
+| 2. Data Collection     |
+|------------------------|
+| - FinQA dataset        |
+| - Includes questions,  |
+|   tables, DSL programs |
++------------------------+
+           ↓
++------------------------+
+| 3. Data Preprocessing  |
+|------------------------|
+| - Normalize text/tables|
+| - Tokenization (BERT)  |
+| - Format inputs/labels |
++------------------------+
+           ↓
++------------------------+
+| 4. Model Design        |
+|------------------------|
+| - BERT retriever       |
+| - LSTM program decoder |
+| - Symbolic executor    |
++------------------------+
+           ↓
++------------------------+
+| 5. Training            |
+|------------------------|
+| - Retriever: relevance |
+| - Generator: programs  |
+| - Loss: cross-entropy  |
++------------------------+
+           ↓
++------------------------+
+| 6. Integration         |
+|------------------------|
+| - Retriever output →   |
+|   Generator input      |
+| - Generator → Executor |
++------------------------+
+           ↓
++------------------------+
+| 7. Evaluation          |
+|------------------------|
+| - Retriever accuracy   |
+| - Program match        |
+| - Execution accuracy   |
++------------------------+
+           ↓
++------------------------+
+| 8. Iteration/Refinement|
+|------------------------|
+| - Analyze failures     |
+| - Fine-tune models     |
+| - Improve inputs       |
++------------------------+
+           ↓
++------------------------+
+| 9. (Optional) Deployment|
+|------------------------|
+| - Export model         |
+| - Create API/demo      |
++------------------------+
+
 ## 🏗️ Pipeline Architecture
 
-## Machine Learning Lifecycle 
 ```
  ┌────────────┐     ┌───────────────┐     ┌────────────┐     ┌────────────┐
  │ Financial  │     │    Retriever  │     │  Generator │     │  Executor  │
