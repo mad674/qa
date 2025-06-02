@@ -45,6 +45,7 @@ Instead of directly predicting the answer, the model **generates a reasoning pro
 
 ## 🏗️ Pipeline Architecture
 
+## Machine Learning Lifecycle 
 ```
  ┌────────────┐     ┌───────────────┐     ┌────────────┐     ┌────────────┐
  │ Financial  │     │    Retriever  │     │  Generator │     │  Executor  │
