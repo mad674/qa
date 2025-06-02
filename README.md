@@ -6,6 +6,7 @@ DATASET LINK: https://www.kaggle.com/datasets/visalakshiiyer/question-answering-
 
 
 ---
+**Built a modular neuro-symbolic architecture with BERT retriever, LSTM generator, and symbolic executor to answer complex financial questions over tables. Followed a structured ML lifecycle for data preprocessing, modular training, integration, and iterative evaluation. This enables precise reasoning and scalable development.**
 
 # 🧠 FinQA: Program Generation for Numerical Reasoning over Financial Text
 
