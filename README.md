@@ -1,4 +1,4 @@
-CODE LINIK : https://colab.research.google.com/drive/1fPAEiVf6ldzq3sneEI2Mcpm_Bz1bD-7U?usp=sharing
+COLAB LINIK : https://colab.research.google.com/drive/1fPAEiVf6ldzq3sneEI2Mcpm_Bz1bD-7U?usp=sharing
 
 PDF LINK: https://arxiv.org/pdf/2109.00122
 
